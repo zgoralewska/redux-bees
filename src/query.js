@@ -33,7 +33,7 @@ export default function query(propName, apiCall, dispatcher = defaultDispatcher)
 
       fetch(props = this.props) {
         const { dispatch } = props;
-        return dispatch(dispatcher(apiCall, props));
+        return dispatch(dispatcher(apiCall.action, props));
       }
 
       render() {
@@ -56,7 +56,7 @@ export default function query(propName, apiCall, dispatcher = defaultDispatcher)
     Wrapper.displayName = `query(${getDisplayName(InnerComponent)}, ${propName})`;
 
     Wrapper.loadData = function(dispatch, props) {
-      return dispatch(dispatcher(apiCall, props));
+      return dispatch(dispatcher(apiCall.action, props));
     };
 
     hoistNonReactStatic(Wrapper, InnerComponent);
