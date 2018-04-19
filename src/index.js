@@ -23,6 +23,7 @@ import {
 } from './actions';
 
 export { default as buildApi } from './buildApi';
+export { default as buildActionCreators } from './buildActionCreators';
 export { default as reducer } from './reducer';
 export { default as middleware } from './middleware';
 export { default as query } from './query';
