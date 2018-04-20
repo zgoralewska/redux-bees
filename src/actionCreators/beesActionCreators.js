@@ -1,4 +1,5 @@
 export function callAction(endpoint, ...args) {
+
     return dispatch => {
         const [ ,,, meta = {} ] = args;
         const params = Object.keys(meta).length ? args.slice(0, -1) : args;
@@ -13,23 +14,25 @@ export function callAction(endpoint, ...args) {
             meta: { ...apiMeta, ...(meta.request || {}), type: 'request' },
         });
 
-        return endpoint(...params)
-            .then((result) => {
-                dispatch({
-                    type: `api/${endpoint.actionName}/response`,
-                    payload: result,
-                    meta: { ...apiMeta, ...(meta.success || {}), type: 'response' },
+        return new Promise((resolve, reject) => {
+            endpoint(...params)
+                .then((result) => {
+                    dispatch({
+                        type: `api/${endpoint.actionName}/response`,
+                        payload: result,
+                        meta: { ...apiMeta, ...(meta.success || {}), type: 'response' },
+                    });
+                    return resolve(result);
+                })
+                .catch((result) => {
+                    dispatch({
+                        type: `api/${endpoint.actionName}/error`,
+                        payload: result,
+                        meta: { ...apiMeta, ...(meta.error || {}), type: 'error' },
+                    });
+                    return reject(result);
                 });
-                return result;
-            })
-            .catch((result) => {
-                dispatch({
-                    type: `api/${endpoint.actionName}/error`,
-                    payload: result,
-                    meta: { ...apiMeta, ...(meta.error || {}), type: 'error' },
-                });
-                return result;
-            });
+        });
     };
 }
 
